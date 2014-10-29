@@ -218,14 +218,13 @@ class CompizDecorators(dict):
 		if parser_options.verbose:
 			print ' * Opening CompizConfig context'
 
-		try:
-			context = compizconfig.Context( \
-				plugins=['decoration'], basic_metadata=True)
+		context = compizconfig.Context()
 
-		except:
-			context = compizconfig.Context()
-
-		self.command = context.Plugins['decoration'].Display['command']
+		if 'decor' in context.Plugins:
+			# Compiz >0.9
+			self.command = context.Plugins['decor'].Screen['command']
+		else:
+			self.command = context.Plugins['decoration'].Display['command']
 
 		for decorator in installed.decorators:
 			self[decorator] = CompizDecorator(decorator, self, installed)
