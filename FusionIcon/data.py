@@ -33,7 +33,7 @@ mesa_libgl_locations = (
 	'/usr/share/nvidia-glx/diversions/libGL.so.1.2',
 )
 
-compiz_args = ['--replace', '--sm-disable', '--ignore-desktop-hints', 'ccp']
+compiz_args = ['--replace', 'ccp']
 
 config_home = os.environ.get('XDG_CONFIG_HOME',
 			os.path.join(os.environ['HOME'], '.config'))
@@ -121,6 +121,12 @@ decorators = {
 #	label
 
 options = {
+	'sm disable':
+		(None, '--sm-disable', 'Disable session management'),
+
+	'keep desktop hints':
+		(None, '--keep-desktop-hints', 'Retain existing desktop hints'),
+
 	'indirect rendering':
 		(None, '--indirect-rendering', 'Indirect Rendering'),
 

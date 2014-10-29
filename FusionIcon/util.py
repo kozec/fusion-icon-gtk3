@@ -337,10 +337,10 @@ class Installed(object):
 		if compiz:
 			compiz_help = run([compiz, '--help'], 'output')
 			for item in compiz_help.split():
-				item = item[1:].replace(']', '')
+				item = item.strip(" \r\n\t")
 				if item.startswith('--'):
 					compiz_optionlist.append(item)
-
+		
 		for option in data.options:
 			if data.options[option][1] not in compiz_optionlist:
 				del self.options[option]
