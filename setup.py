@@ -46,16 +46,8 @@ version = open('VERSION', 'r').read().strip()
 packages = ['FusionIcon']
 
 available_interfaces = {
-	'gtk': 'FusionIcon.interface_gtk',
-	'qt4': 'FusionIcon.interface_qt4',
-#	'qt3': 'FusionIcon.interface_qt3',
+	'gtk3': 'FusionIcon.interface_gtk3',
 }
-
-#if 'interfaces' in os.environ:
-# 	for interface in os.environ['interfaces'].split():
-#		if interface in available_interfaces:
-#			packages.append(available_interfaces[interface])
-#else:
 
 packages.extend(available_interfaces.values())
 
