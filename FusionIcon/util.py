@@ -190,6 +190,7 @@ class WindowManagers(dict):
 
 		else:
 			print ' * Not reloading, no active window manager set'
+		return False
 
 	active = property(__get, __set)
 
