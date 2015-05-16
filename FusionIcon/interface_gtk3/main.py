@@ -20,7 +20,7 @@
 # GTK3 port: kozec
 
 import os, time
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk
 from FusionIcon.start import wms, apps, options, decorators, init
 
 class TrayMenu(Gtk.Menu):
@@ -92,7 +92,7 @@ class TrayMenu(Gtk.Menu):
 		self.popup(None, None, None, Gtk.StatusIcon.position_menu, button, time)
 
 	def reload_activate(self, widget):
-		GLib.timeout_add(500, wms.restart)
+		wms.restart()
 
 	def quit_activate(self, widget):
 		Gtk.main_quit()
