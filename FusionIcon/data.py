@@ -127,6 +127,9 @@ options = {
 	'keep desktop hints':
 		(None, '--keep-desktop-hints', 'Retain existing desktop hints'),
 
+	'reload mate panel':
+		(None, None, 'Reload mate-panel after (re)start'),
+
 	'indirect rendering':
 		(None, '--indirect-rendering', 'Indirect Rendering'),
 

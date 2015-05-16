@@ -22,6 +22,7 @@
 
 import os, compizconfig, ConfigParser, time
 import data as _data
+import psutil
 from parser import options as parser_options
 from environment import env
 from execute import run
@@ -164,7 +165,8 @@ class WindowManagers(dict):
 			compiz_command = self['compiz'].command[:]
 			for option in options:
 				if options[option].enabled:
-					compiz_command.append(options[option].switch)	
+					if options[option].switch is not None:
+						compiz_command.append(options[option].switch)
 
 			kill_list = ['killall']
 			for decorator in decorators:
@@ -176,6 +178,14 @@ class WindowManagers(dict):
 			# do it
 			print ' ... executing:', ' '.join(compiz_command)
 			run(compiz_command, quiet=False)
+			
+			if options["reload mate panel"].enabled:
+				# Reload mate-panel, if requested and running
+				if [ p for p in psutil.process_iter() if p.name() == "mate-panel" ]:
+					print " * Reloading mate-panel"
+					run(["mate-panel", "--replace"], "spawn", True)
+				else:
+					print " * mate-panel reload is enabled, but panel is not running"
 
 		elif self.active:
 			run(self[self.active].command)
@@ -342,7 +352,7 @@ class Installed(object):
 					compiz_optionlist.append(item)
 		
 		for option in data.options:
-			if data.options[option][1] not in compiz_optionlist:
+			if data.options[option][1] not in compiz_optionlist and data.options[option][1] is not None:
 				del self.options[option]
 
 class Configuration(ConfigParser.ConfigParser):
