@@ -179,7 +179,7 @@ class WindowManagers(dict):
 			print ' ... executing:', ' '.join(compiz_command)
 			run(compiz_command, quiet=False)
 			
-			if options["reload mate panel"].enabled:
+			if "reload mate panel" in options and options["reload mate panel"].enabled:
 				# Reload mate-panel, if requested and running
 				if [ p for p in psutil.process_iter() if p.name() == "mate-panel" ]:
 					print " * Reloading mate-panel"
@@ -307,6 +307,13 @@ class Installed(object):
 			else:
 				selected = ''
 			output += ' -- %s%s' %(bins[name], selected)
+
+		### mate-panel
+			which = run(['which', 'mate-panel'], 'output')
+			if which:
+				output += ' -- %s' %which
+			else:
+				del data.options['reload mate panel']
 
 		### Everything Else
 		self.wms = data.wms.copy()
