@@ -181,7 +181,8 @@ class WindowManagers(dict):
 			
 			if "reload mate panel" in options and options["reload mate panel"].enabled:
 				# Reload mate-panel, if requested and running
-				if [ p for p in psutil.process_iter() if p.name() == "mate-panel" ]:
+				pname = lambda p : p.name if type(p.name) == str else p.name()	# for psutil <=1.2
+				if [ p for p in psutil.process_iter() if pname(p) == "mate-panel" ]:
 					print " * Reloading mate-panel"
 					run(["mate-panel", "--replace"], "spawn", True)
 				else:
