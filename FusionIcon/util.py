@@ -22,7 +22,11 @@
 
 import os, compizconfig, ConfigParser, time
 import data as _data
-import psutil
+try:
+	import psutil
+except ImportError:
+	psutil = None
+	del _data.options["reload mate panel"]
 from parser import options as parser_options
 from environment import env
 from execute import run
@@ -179,7 +183,7 @@ class WindowManagers(dict):
 			print ' ... executing:', ' '.join(compiz_command)
 			run(compiz_command, quiet=False)
 			
-			if "reload mate panel" in options and options["reload mate panel"].enabled:
+			if "reload mate panel" in options and options["reload mate panel"].enabled and psutil is not None:
 				# Reload mate-panel, if requested and running
 				pname = lambda p : p.name if type(p.name) == str else p.name()	# for psutil <=1.2
 				if [ p for p in psutil.process_iter() if pname(p) == "mate-panel" ]:
