@@ -22,6 +22,11 @@
 
 import os, compizconfig, ConfigParser, time
 import data as _data
+try:
+	import psutil
+except ImportError:
+	psutil = None
+	del _data.options["reload mate panel"]
 from parser import options as parser_options
 from environment import env
 from execute import run
@@ -164,7 +169,8 @@ class WindowManagers(dict):
 			compiz_command = self['compiz'].command[:]
 			for option in options:
 				if options[option].enabled:
-					compiz_command.append(options[option].switch)	
+					if options[option].switch is not None:
+						compiz_command.append(options[option].switch)
 
 			kill_list = ['killall']
 			for decorator in decorators:
@@ -176,6 +182,15 @@ class WindowManagers(dict):
 			# do it
 			print ' ... executing:', ' '.join(compiz_command)
 			run(compiz_command, quiet=False)
+			
+			if "reload mate panel" in options and options["reload mate panel"].enabled and psutil is not None:
+				# Reload mate-panel, if requested and running
+				pname = lambda p : p.name if type(p.name) == str else p.name()	# for psutil <=1.2
+				if [ p for p in psutil.process_iter() if pname(p) == "mate-panel" ]:
+					print " * Reloading mate-panel"
+					run(["mate-panel", "--replace"], "spawn", True)
+				else:
+					print " * mate-panel reload is enabled, but panel is not running"
 
 		elif self.active:
 			run(self[self.active].command)
@@ -298,6 +313,13 @@ class Installed(object):
 				selected = ''
 			output += ' -- %s%s' %(bins[name], selected)
 
+		### mate-panel
+			which = run(['which', 'mate-panel'], 'output')
+			if which:
+				output += ' -- %s' %which
+			else:
+				del data.options['reload mate panel']
+
 		### Everything Else
 		self.wms = data.wms.copy()
 		for wm in data.wms:
@@ -342,7 +364,7 @@ class Installed(object):
 					compiz_optionlist.append(item)
 		
 		for option in data.options:
-			if data.options[option][1] not in compiz_optionlist:
+			if data.options[option][1] not in compiz_optionlist and data.options[option][1] is not None:
 				del self.options[option]
 
 class Configuration(ConfigParser.ConfigParser):
