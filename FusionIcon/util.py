@@ -317,7 +317,7 @@ class Installed(object):
 			which = run(['which', 'mate-panel'], 'output')
 			if which:
 				output += ' -- %s' %which
-			else:
+			elif "reload mate panel" in data.options:
 				del data.options['reload mate panel']
 
 		### Everything Else
